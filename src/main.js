@@ -1,12 +1,2 @@
-
-const linkListItems = document.querySelectorAll('.linkList');
-
-linkListItems.forEach(item => {
-  item.addEventListener('click', e => {
-    e.preventDefault(); 
-
-    const href = item.querySelector('a').getAttribute('href'); 
-
-    window.location.href = href; 
-  });
-});
+// import "./js/1-timer"
+// import "./js/2-snackbar"
