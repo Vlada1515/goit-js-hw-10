@@ -1,31 +1,47 @@
-const form = document.querySelector('.feedback-form');
-const email = form.elements.email;
-const message = form.elements.message;
+// Описаний у документації
+import iziToast from "izitoast";
+// Додатковий імпорт стилів
+import "izitoast/dist/css/iziToast.min.css";
 
-const localStorageKey = 'feedback-form-state';
-const storedFormData = JSON.parse(localStorage.getItem(localStorageKey)) || {
-  email: '',
-  message: '',
-};
-
-email.value = storedFormData.email;
-message.value = storedFormData.message;
-form.addEventListener('input', handleInput);
-function handleInput() {
-  const object = { email: email.value.trim(), message: message.value.trim() };
-  setFormData(object);
-}
-function setFormData(object) {
-  localStorage.setItem('feedback-form-state', JSON.stringify(object));
-}
+const form = document.querySelector('.form');
 form.addEventListener('submit', handleSubmit);
-function handleSubmit(evt) {
-  evt.preventDefault();
-  if (email.value == '' || message.value == '') {
-    return alert('Please, check input information!!!');
-  }
-  const object = { email: email.value.trim(), message: message.value.trim() };
-  console.log(object);
-  localStorage.removeItem(localStorageKey);
-  form.reset();
+
+function handleSubmit(event) {
+  event.preventDefault();
+
+  const delayInput = this.elements.delay;
+  const delay = parseInt(delayInput.value);
+
+  const stateInput = this.elements.state;
+  const state = stateInput.value;
+
+  let promise;
+
+  promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (state === 'fulfilled') {
+        resolve(delay);
+      } else if (state === 'rejected') {
+        reject(delay);
+      }
+    }, delay);
+  });
+  promise
+    .then(delay => {
+      iziToast.success({
+        title: 'Success',
+        message: `✅ Fulfilled promise in ${delay}ms`,
+        position: 'topRight',
+      });
+    })
+
+    .catch(delay => {
+      iziToast.error({
+        title: 'Error',
+        message: `❌ Rejected promise in ${delay}ms`,
+        position: 'topRight',
+      });
+    });
+
+  event.currentTarget.reset();
 }
